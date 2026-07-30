@@ -48,12 +48,12 @@ public class QuestionController {
     }
 
     @GetMapping("/{questionId}")
-    public QuestionResponse getFullQuestion(
+    public ResponseEntity<QuestionResponse> getFullQuestion(
             @RequestHeader("X-User-Id")
             UUID userId,
             @PathVariable Long questionId
     ){
-        return questionService.getFullQuestion(questionId);
+        return ResponseEntity.status(HttpStatus.FOUND).body(questionService.getFullQuestion(questionId));
     }
 
 }
