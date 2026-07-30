@@ -2,6 +2,7 @@ package com.exam.examination.controller;
 import com.exam.examination.dto.request.AQStructure;
 import com.exam.examination.dto.request.CreateAssessmentQuestionRequest;
 import com.exam.examination.dto.request.CreateAssessmentRequest;
+import com.exam.examination.dto.request.UpdateAssessmentStatusRequest;
 import com.exam.examination.dto.response.AssessmentQuestionResponse;
 import com.exam.examination.dto.response.AssessmentResponse;
 import com.exam.examination.dto.response.QuestionResponse;
@@ -51,6 +52,27 @@ public class AssessmentController {
         List<AssessmentQuestionResponse> response = AQService.mapQuestionsToAssessment(aqStructure, assessmentId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/{assessmentId}/status")
+    public ResponseEntity<AssessmentResponse> updateAssessmentStatus(
+
+            @RequestHeader("X-User-Id")
+            UUID uuid,
+
+            @PathVariable Long assessmentId,
+
+            @Valid
+            @RequestBody UpdateAssessmentStatusRequest request
+    ) {
+
+        AssessmentResponse response =
+                assessmentService.updateAssessmentStatus(
+                        assessmentId,
+                        request
+                );
+
+        return ResponseEntity.ok(response);
     }
 
 
