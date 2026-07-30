@@ -5,14 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class AssessmentQuestionRequest {
-
-    @NotNull
-    private Long assessmentId;
-
+public class AQStructure {
     @NotNull
     private Long questionId;
 
@@ -24,4 +18,5 @@ public class AssessmentQuestionRequest {
     @Min(1)
     @Positive
     private Integer marks;
+
 }

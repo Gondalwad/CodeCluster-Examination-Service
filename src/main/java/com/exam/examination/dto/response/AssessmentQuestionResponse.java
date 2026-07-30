@@ -1,19 +1,19 @@
 package com.exam.examination.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AssessmentQuestionResponse {
 
-    private UUID assessmentId;
+    private Long assessmentId;
 
-    private UUID questionId;
+    private Long questionId;
 
     private Short displayOrder;
 
