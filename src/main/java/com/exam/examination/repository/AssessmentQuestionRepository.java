@@ -18,15 +18,10 @@ import java.util.UUID;
 public interface AssessmentQuestionRepository
         extends JpaRepository<AssessmentQuestion, AssessmentQuestionId> {
 
-
     List<AssessmentQuestion> findByIdAssessmentId(Long assessmentId);
 
-//    @Query("""
-//            SELECT q
-//            FROM AssessmentQuestion q
-//            WHERE (q.assessment_id = :assessmentId)
-//            """)
-//    List<AssessmentQuestion> findAssessmentQuestions(
-//            @Param("assessmentId") Long assessmentId
-//    );
+    boolean existsByIdAssessmentIdAndIdQuestionId(
+            Long assessmentId,
+            Long questionId
+    );
 }
