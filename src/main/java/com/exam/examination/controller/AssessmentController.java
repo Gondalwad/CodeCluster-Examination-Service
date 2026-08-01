@@ -3,9 +3,11 @@ import com.exam.examination.dto.request.AQStructure;
 import com.exam.examination.dto.request.CreateAssessmentQuestionRequest;
 import com.exam.examination.dto.request.CreateAssessmentRequest;
 import com.exam.examination.dto.request.UpdateAssessmentStatusRequest;
+import com.exam.examination.dto.response.AssessmentAttemptResponse;
 import com.exam.examination.dto.response.AssessmentQuestionResponse;
 import com.exam.examination.dto.response.AssessmentResponse;
 import com.exam.examination.dto.response.QuestionResponse;
+import com.exam.examination.service.AssessmentAttemptService;
 import com.exam.examination.service.AssessmentQuestionService;
 import com.exam.examination.service.AssessmentService;
 import jakarta.validation.Valid;
@@ -25,6 +27,7 @@ public class AssessmentController {
 
     private final AssessmentService assessmentService;
     private final AssessmentQuestionService AQService;
+    private final AssessmentAttemptService AAService;
 
     @PostMapping
     public ResponseEntity<AssessmentResponse> createAssessment(
@@ -73,6 +76,19 @@ public class AssessmentController {
                 );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{assessmentId}/attempts")
+    public ResponseEntity<AssessmentAttemptResponse> createAssessmentAttempt(
+            @RequestHeader("X-User-Id")
+            UUID uuid,
+
+            @PathVariable Long assessmentId
+
+    ){
+        AssessmentAttemptResponse response = AAService.startAttempt(uuid, assessmentId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
