@@ -8,4 +8,8 @@ public interface AssessmentAttemptService {
             UUID userId,
             Long assessmentId
     );
+
+    AssessmentAttemptResponse fetchAttempt(
+            Long attemptId
+    );
 }

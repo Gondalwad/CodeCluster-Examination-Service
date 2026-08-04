@@ -52,4 +52,23 @@ public class AssessmentAttemptServiceImpl implements AssessmentAttemptService {
                 .totalScore(savedAttempt.getTotalScore())
                 .build();
     }
+
+    @Override
+    public AssessmentAttemptResponse fetchAttempt(
+            Long attemptId
+    ){
+        AssessmentAttempt attemptData = assessmentAttemptRepository.findById(attemptId)
+                .orElseThrow(() ->
+                        new RuntimeException("Assessment Attempt not found with id: " + attemptId));
+
+        return AssessmentAttemptResponse.builder()
+                .attemptId(attemptData.getAttemptId())
+                .assessmentId(attemptData.getAssessment().getAssessmentId())
+                .status(attemptData.getStatus())
+                .startedAt(attemptData.getStartedAt())
+                .submittedAt(attemptData.getSubmittedAt())
+                .totalScore(attemptData.getTotalScore())
+                .build();
+
+    }
 }
