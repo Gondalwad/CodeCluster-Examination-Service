@@ -3,6 +3,7 @@ package com.exam.examination.controller;
 
 import com.exam.examination.dto.response.AssessmentAttemptResponse;
 import com.exam.examination.service.AssessmentAttemptService;
+import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,17 @@ public class AttemptController {
 
         AssessmentAttemptResponse response = AAService.fetchAttempt(attemptId);
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
+    @PostMapping("/{attemptId}/submit")
+    public ResponseEntity<AssessmentAttemptResponse> submitAttempt(
+            @RequestHeader("X-User-Id")
+            UUID uuid,
+
+            @PathVariable
+            Long attemptId
+    ){
+        AssessmentAttemptResponse response = AAService.submitAttempt(attemptId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 }

@@ -12,4 +12,8 @@ public interface AssessmentAttemptService {
     AssessmentAttemptResponse fetchAttempt(
             Long attemptId
     );
+
+    AssessmentAttemptResponse submitAttempt(
+            Long attemptId
+    );
 }

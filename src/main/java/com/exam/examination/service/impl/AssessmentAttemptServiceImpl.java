@@ -71,4 +71,26 @@ public class AssessmentAttemptServiceImpl implements AssessmentAttemptService {
                 .build();
 
     }
+
+    @Override
+    public AssessmentAttemptResponse submitAttempt(Long attemptId) {
+
+        AssessmentAttempt attempt = assessmentAttemptRepository.findById(attemptId)
+                .orElseThrow(() ->
+                        new RuntimeException("Assessment Attempt not found with id: " + attemptId));
+
+        if (attempt.getStatus() == AttemptStatus.SUBMITTED) {
+            throw new RuntimeException("Assessment Attempt has already been submitted.");
+        }
+
+        attempt.setStatus(AttemptStatus.SUBMITTED);
+        attempt.setSubmittedAt(OffsetDateTime.now());
+
+        AssessmentAttempt updatedAttempt = assessmentAttemptRepository.save(attempt);
+
+        return AssessmentAttemptResponse.builder()
+                .attemptId(updatedAttempt.getAttemptId())
+                .status(updatedAttempt.getStatus())
+                .build();
+    }
 }
