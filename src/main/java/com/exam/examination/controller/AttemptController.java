@@ -21,29 +21,39 @@ public class AttemptController {
 
     private final AssessmentAttemptService AAService;
 
-
     @GetMapping("/{attemptId}")
     public ResponseEntity<AssessmentAttemptResponse> fetchAttempt(
-            @RequestHeader("X-User-Id")
-            UUID uuid,
+            @RequestHeader("X-User-Id") UUID uuid,
+            @PathVariable Long attemptId
+    ) {
 
-            @PathVariable
-            Long attemptId
-    ){
+        try {
+            AssessmentAttemptResponse response = AAService.fetchAttempt(attemptId);
+            return ResponseEntity.ok(response);
 
-        AssessmentAttemptResponse response = AAService.fetchAttempt(attemptId);
-        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping("/{attemptId}/submit")
     public ResponseEntity<AssessmentAttemptResponse> submitAttempt(
-            @RequestHeader("X-User-Id")
-            UUID uuid,
+            @RequestHeader("X-User-Id") UUID uuid,
+            @PathVariable Long attemptId
+    ) {
 
-            @PathVariable
-            Long attemptId
-    ){
-        AssessmentAttemptResponse response = AAService.submitAttempt(attemptId);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+        try {
+            AssessmentAttemptResponse response = AAService.submitAttempt(attemptId);
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException ex) {
+
+            if ("Assessment Attempt has already been submitted."
+                    .equals(ex.getMessage())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

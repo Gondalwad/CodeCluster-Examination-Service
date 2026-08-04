@@ -25,10 +25,17 @@ public class QuestionController {
     public ResponseEntity<QuestionResponse> createQuestion(
             @Valid @RequestBody CreateQuestionRequest request) {
 
-        QuestionResponse response = questionService.createQuestion(request);
+        try {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(response);
+            QuestionResponse response =
+                    questionService.createQuestion(request);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(response);
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping
@@ -44,16 +51,34 @@ public class QuestionController {
             QuestionType type
     ) {
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(questionService.getQuestions(difficulty, type));
+        try {
+
+            return ResponseEntity.ok(
+                    questionService.getQuestions(difficulty, type)
+            );
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/{questionId}")
     public ResponseEntity<QuestionResponse> getFullQuestion(
             @RequestHeader("X-User-Id")
             UUID userId,
+
             @PathVariable Long questionId
-    ){
-        return ResponseEntity.status(HttpStatus.FOUND).body(questionService.getFullQuestion(questionId));
+    ) {
+
+        try {
+
+            return ResponseEntity.ok(
+                    questionService.getFullQuestion(questionId)
+            );
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 }

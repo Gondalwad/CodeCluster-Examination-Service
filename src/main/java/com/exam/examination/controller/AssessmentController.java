@@ -34,13 +34,17 @@ public class AssessmentController {
             @RequestHeader("X-User-Id")
             UUID uuid,
             @Valid @RequestBody CreateAssessmentRequest request
-    ){
-        AssessmentResponse response = assessmentService.createAssessment(request);
+    ) {
+        try {
+            AssessmentResponse response = assessmentService.createAssessment(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(response);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(response);
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
-
 
     @PostMapping("/{assessmentId}/questions")
     public ResponseEntity<List<AssessmentQuestionResponse>> submitQuestionsToAssessment(
@@ -50,11 +54,24 @@ public class AssessmentController {
             @Valid @RequestBody List<AQStructure> aqStructure,
 
             @PathVariable Long assessmentId
-            ){
+    ) {
 
-        List<AssessmentQuestionResponse> response = AQService.mapQuestionsToAssessment(aqStructure, assessmentId);
+        try {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            List<AssessmentQuestionResponse> response =
+                    AQService.mapQuestionsToAssessment(aqStructure, assessmentId);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        } catch (RuntimeException ex) {
+
+            if (ex.getMessage().contains("Assessment")
+                    || ex.getMessage().contains("Question")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{assessmentId}/status")
@@ -69,13 +86,19 @@ public class AssessmentController {
             @RequestBody UpdateAssessmentStatusRequest request
     ) {
 
-        AssessmentResponse response =
-                assessmentService.updateAssessmentStatus(
-                        assessmentId,
-                        request
-                );
+        try {
 
-        return ResponseEntity.ok(response);
+            AssessmentResponse response =
+                    assessmentService.updateAssessmentStatus(
+                            assessmentId,
+                            request
+                    );
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping("/{assessmentId}/attempts")
@@ -85,10 +108,23 @@ public class AssessmentController {
 
             @PathVariable Long assessmentId
 
-    ){
-        AssessmentAttemptResponse response = AAService.startAttempt(uuid, assessmentId);
+    ) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        try {
+
+            AssessmentAttemptResponse response =
+                    AAService.startAttempt(uuid, assessmentId);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        } catch (RuntimeException ex) {
+
+            if (ex.getMessage().contains("already")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 
