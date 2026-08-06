@@ -3,6 +3,7 @@ package com.exam.examination.dto.request;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ public class SubmitAssessmentRequest {
 
     private Long assessmentId;
 
-    private Long studentId;
+    private UUID userId;
 
     private List<AnswerRequest> answers;
 }
