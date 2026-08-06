@@ -3,10 +3,7 @@ import com.exam.examination.dto.request.AQStructure;
 import com.exam.examination.dto.request.CreateAssessmentQuestionRequest;
 import com.exam.examination.dto.request.CreateAssessmentRequest;
 import com.exam.examination.dto.request.UpdateAssessmentStatusRequest;
-import com.exam.examination.dto.response.AssessmentAttemptResponse;
-import com.exam.examination.dto.response.AssessmentQuestionResponse;
-import com.exam.examination.dto.response.AssessmentResponse;
-import com.exam.examination.dto.response.QuestionResponse;
+import com.exam.examination.dto.response.*;
 import com.exam.examination.service.AssessmentAttemptService;
 import com.exam.examination.service.AssessmentQuestionService;
 import com.exam.examination.service.AssessmentService;
@@ -67,6 +64,28 @@ public class AssessmentController {
 
             if (ex.getMessage().contains("Assessment")
                     || ex.getMessage().contains("Question")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{assessmentId}/questions")
+    public ResponseEntity<List<AssessmentQuestionTypeResponse>> getQuestionsFromAssessment(
+            @RequestHeader("X-USer-Id")
+            UUID uuid,
+
+            @PathVariable
+            Long assessmentId
+    ){
+        try {
+            List<AssessmentQuestionTypeResponse> response = AQService.getQuestionsForAssessment(assessmentId);
+
+            return ResponseEntity.status(HttpStatus.FOUND).body(response);
+        }
+        catch (RuntimeException e){
+            if(e.getMessage().contains("not found")){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
