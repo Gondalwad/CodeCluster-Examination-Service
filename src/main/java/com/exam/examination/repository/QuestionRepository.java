@@ -21,23 +21,15 @@ public interface QuestionRepository
 
 
     @Query("""
-            SELECT q
-            FROM Question q
-            WHERE (:difficulty IS NULL OR q.difficulty = :difficulty)
-              AND (:type IS NULL OR q.type = :type)
-            """)
-    List<Question> findQuestions(
+    SELECT q
+    FROM Question q
+    WHERE (:difficulty IS NULL OR q.difficulty = :difficulty)
+      AND (:type IS NULL OR q.type = :type)
+    """)
+    List<Question> findQuestionsByDifficultyAndQuestionType(
             @Param("difficulty") Difficulty difficulty,
             @Param("type") QuestionType type
     );
 
-    @Query("""
-            SELECT q 
-            FROM Question q
-            WHERE (q.questionId = :questionId)
-            LIMIT 1
-            """)
-    Question getFullQuestion(
-            @Param("questionId") Long questionId
-    );
+
 }

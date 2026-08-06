@@ -101,6 +101,12 @@ public class AssessmentController {
         }
     }
 
+    /**
+     * Api is accessible by faculty and institute admin to create Assesment.
+     * @param uuid
+     * @param assessmentId
+     * @return
+     */
     @PostMapping("/{assessmentId}/attempts")
     public ResponseEntity<AssessmentAttemptResponse> createAssessmentAttempt(
             @RequestHeader("X-User-Id")

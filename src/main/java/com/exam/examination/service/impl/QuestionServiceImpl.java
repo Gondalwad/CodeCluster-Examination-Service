@@ -5,12 +5,14 @@ import com.exam.examination.dto.response.QuestionResponse;
 import com.exam.examination.entity.Question;
 import com.exam.examination.enums.Difficulty;
 import com.exam.examination.enums.QuestionType;
+import com.exam.examination.exception.QuestionNotFoundException;
 import com.exam.examination.repository.QuestionRepository;
 import com.exam.examination.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +54,7 @@ public class QuestionServiceImpl implements QuestionService {
             QuestionType type) {
 
         List<Question> questions =
-                repository.findQuestions(difficulty, type);
+                repository.findQuestionsByDifficultyAndQuestionType(difficulty, type);
 
         return questions.stream()
                 .map(question -> QuestionResponse.builder()
@@ -66,18 +68,21 @@ public class QuestionServiceImpl implements QuestionService {
                 .toList();
     }
 
+    /// gets question based on question Id using questionRepository
     @Override
     public QuestionResponse getFullQuestion(Long questionId){
-        Question question = repository.getFullQuestion(questionId);
-
+        Optional<Question> question = repository.findByQuestionId(questionId);
+        if(question.isEmpty()){
+            throw new QuestionNotFoundException("Question Not Found");
+        }
         return QuestionResponse.builder()
-                .questionId(question.getQuestionId())
-                .title(question.getTitle())
-                .description(question.getDescription())
-                .type(question.getType())
-                .difficulty(question.getDifficulty())
-                .marks(question.getMarks())
-                .isPublic(question.getIsPublic())
+                .questionId(question.get().getQuestionId())
+                .title(question.get().getTitle())
+                .description(question.get().getDescription())
+                .type(question.get().getType())
+                .difficulty(question.get().getDifficulty())
+                .marks(question.get().getMarks())
+                .isPublic(question.get().getIsPublic())
                 .build();
 
     }
